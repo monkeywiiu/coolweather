@@ -102,7 +102,8 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
 
-                SharedPreferences newPrefs = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
+                SharedPreferences newPrefs = PreferenceManager.
+                        getDefaultSharedPreferences(WeatherActivity.this);
                 String newWeatherString = newPrefs.getString("weather", null);
                 Weather newWeather = Utility.handleWeatherResponse(newWeatherString);
                 String newWeatherId = newWeather.basic.weatherId;

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.coolweather.android.gson.Weather;
 import com.coolweather.android.util.HttpUtil;
@@ -24,11 +25,18 @@ public class AutoUpdateService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("Service", "create");
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("Service", "nihao");
         updateBingPic();
         updateWeather();
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 8 * 60 * 60 * 1000;
+        int anHour = 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateService.class);
         PendingIntent pi = PendingIntent.getService(this, 0, i , 0);
@@ -48,8 +56,8 @@ public class AutoUpdateService extends Service {
         if (weatherString != null) {
             Weather weather = Utility.handleWeatherResponse(weatherString);
             String weatherId = weather.basic.weatherId;
-            String weatherUrl = "\"https://free-api.heweather.com/v5/weather?city=\"+" +
-                    "weatherId+\"&key=13c7da944e8f45098b4e3d3edae261f3\"";
+            String weatherUrl = "https://free-api.heweather.com/v5/weather?city=" +
+                    weatherId + "&key=13c7da944e8f45098b4e3d3edae261f3";
             HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
